@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+
+    <!--  
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="jquery-1.11.2.min.js"></script>
+     -->
+
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    
+    <style type="text/css">
+        
+    /*    body {
+          text-align: center;
+        }
+    */
+    </style>
+    
+    <script>
+
+      function doHttpGet(url, callback) { 
+            
+        console.log('doHttpGet() url: ' + url);  
+        
+        $.get(url, function(response) {
+        
+          // console.log('GET ' + url + ' response: ' + response);
+          console.log('Got successful response: ' + JSON.stringify(response));
+
+          callback(null, response);      
+        })
+        .fail(function(error) {
+          
+          console.log('Got error response: ' + JSON.stringify(error));
+        });
+      }
+
+
+      function updateBounds(object) {
+
+        var lowerBound1 = $('#' + object + 'LowerBoundValue1').text(),
+            lowerBound2 = $('#' + object + 'LowerBoundValue2').text(),
+            lowerBound3 = $('#' + object + 'LowerBoundValue3').text();
+
+        var upperBound1 = $('#' + object + 'UpperBoundValue1').text(),
+            upperBound2 = $('#' + object + 'UpperBoundValue2').text(),
+            upperBound3 = $('#' + object + 'UpperBoundValue3').text();
+
+        var boundsUrl = '/setBounds?object=' + object + '&' +   
+                  'lower1=' + lowerBound1 + '&' +
+                  'lower2=' + lowerBound2 + '&' +
+                  'lower3=' + lowerBound3 + '&' +
+                  'upper1=' + upperBound1 + '&' +
+                  'upper2=' + upperBound2 + '&' +
+                  'upper3=' + upperBound3;
+
+        doHttpGet(boundsUrl, function(error, response) {
+
+          if(!error) {
+
+            updateConfig();
+          }
+        });
+      }
+
+      function updateConfig() {
+
+        var config = ""
+          + "COLOR_YELLOW_PIECES = {" + "<br/>"
+          + "  'lower_bound' : numpy.array([" + $('#yellowPiecesLowerBoundValue1').text() + ", " + $('#yellowPiecesLowerBoundValue2').text() + ", " + $('#yellowPiecesLowerBoundValue3').text() + "])," + "<br/>"
+          + "  'upper_bound' : numpy.array([" + $('#yellowPiecesUpperBoundValue1').text() + ", " + $('#yellowPiecesUpperBoundValue2').text() + ", " + $('#yellowPiecesUpperBoundValue3').text() + "])," + "<br/>"
+          + "  'erosion' : " + $('#yellowPiecesErosion').val() + ", " + "<br/>"
+          + "  'dilation' : " + $('#yellowPiecesDilation').val() + "" + "<br/>"
+          + "}" + "<br/>"
+          + "" + "<br/>"
+          + "COLOR_RED_PIECES = {" + "<br/>"
+          + "  'lower_bound' : numpy.array([" + $('#redPiecesLowerBoundValue1').text() + ", " + $('#redPiecesLowerBoundValue2').text() + ", " + $('#redPiecesLowerBoundValue3').text() + "])," + "<br/>"
+          + "  'upper_bound' : numpy.array([" + $('#redPiecesUpperBoundValue1').text() + ", " + $('#redPiecesUpperBoundValue2').text() + ", " + $('#redPiecesUpperBoundValue3').text() + "])," + "<br/>"
+          + "  'erosion' : " + $('#redPiecesErosion').val() + "," + "<br/>"
+          + "  'dilation' : " + $('#redPiecesDilation').val() + "" + "<br/>"
+          + "}" + "<br/>"
+          + "" + "<br/>"
+          + "COLOR_GREEN_LINES = {" + "<br/>"
+          + "  'lower_bound' : numpy.array([" + $('#greenLinesLowerBoundValue1').text() + ", " + $('#greenLinesLowerBoundValue2').text() + ", " + $('#greenLinesLowerBoundValue3').text() + "])," + "<br/>"
+          + "  'upper_bound' : numpy.array([" + $('#greenLinesUpperBoundValue1').text() + ", " + $('#greenLinesUpperBoundValue2').text() + ", " + $('#greenLinesUpperBoundValue3').text() + "])," + "<br/>"
+          + "  'erosion' : " + $('#greenLinesErosion').val() + "," + "<br/>"
+          + "  'dilation' : " + $('#greenLinesDilation').val() + "" + "<br/>"
+          + "}" + "<br/>"
+          + "" + "<br/>"
+        ;
+
+        $('#config').html(config);
+      }
+    
+      $(function() {
+
+        var min = 0, max = 255;
+        
+        $('#yellowPiecesBlueSlider').slider({
+          range: true,
+          min: min,
+          max: max,
+          values: [ {{ yellowPiecesLowerBlue }}, {{ yellowPiecesUpperBlue }} ],
+          change: function( event, ui ) {
+            $('#yellowPiecesLowerBoundValue1').text(ui.values[0]);
+            $('#yellowPiecesUpperBoundValue1').text(ui.values[1]);
+            updateBounds('yellowPieces');
+          }
+        });
+        
+        $('#yellowPiecesGreenSlider').slider({
+          range: true,
+          min: min,
+          max: max,
+          values: [ {{ yellowPiecesLowerGreen }}, {{ yellowPiecesUpperGreen }} ],
+          change: function( event, ui ) {
+            $('#yellowPiecesLowerBoundValue2').text(ui.values[0]);
+            $('#yellowPiecesUpperBoundValue2').text(ui.values[1]);
+            updateBounds('yellowPieces');
+          }
+        });
+
+        $('#yellowPiecesRedSlider').slider({
+          range: true,
+          min: min,
+          max: max,
+          values: [ {{ yellowPiecesLowerRed }}, {{ yellowPiecesUpperRed }} ],
+          change: function( event, ui ) {
+            $('#yellowPiecesLowerBoundValue3').text(ui.values[0]);
+            $('#yellowPiecesUpperBoundValue3').text(ui.values[1]);
+            updateBounds('yellowPieces');
+          }
+        });
+
+
+        $('#redPiecesBlueSlider').slider({
+          range: true,
+          min: min,
+          max: max,
+          values: [ {{ redPiecesLowerBlue }}, {{ redPiecesUpperBlue }} ],
+          change: function( event, ui ) {
+            $('#redPiecesLowerBoundValue1').text(ui.values[0]);
+            $('#redPiecesUpperBoundValue1').text(ui.values[1]);
+            updateBounds('redPieces');
+          }
+        });
+        
+        $('#redPiecesGreenSlider').slider({
+          range: true,
+          min: min,
+          max: max,
+          values: [ {{ redPiecesLowerGreen }}, {{ redPiecesUpperGreen }} ],
+          change: function( event, ui ) {
+            $('#redPiecesLowerBoundValue2').text(ui.values[0]);
+            $('#redPiecesUpperBoundValue2').text(ui.values[1]);
+            updateBounds('redPieces');
+          }
+        });
+
+        $('#redPiecesRedSlider').slider({
+          range: true,
+          min: min,
+          max: max,
+          values: [ {{ redPiecesLowerRed }}, {{ redPiecesUpperRed }} ],
+          change: function( event, ui ) {
+            $('#redPiecesLowerBoundValue3').text(ui.values[0]);
+            $('#redPiecesUpperBoundValue3').text(ui.values[1]);
+            updateBounds('redPieces');
+          }
+        });
+
+
+        $('#greenLinesBlueSlider').slider({
+          range: true,
+          min: min,
+          max: max,
+          values: [ {{ greenLinesLowerBlue }}, {{ greenLinesUpperBlue }} ],
+          change: function( event, ui ) {
+            $('#greenLinesLowerBoundValue1').text(ui.values[0]);
+            $('#greenLinesUpperBoundValue1').text(ui.values[1]);
+            updateBounds('greenLines');
+          }
+        });
+        
+        $('#greenLinesGreenSlider').slider({
+          range: true,
+          min: min,
+          max: max,
+          values: [ {{ greenLinesLowerGreen }}, {{ greenLinesUpperGreen }} ],
+          change: function( event, ui ) {
+            $('#greenLinesLowerBoundValue2').text(ui.values[0]);
+            $('#greenLinesUpperBoundValue2').text(ui.values[1]);
+            updateBounds('greenLines');
+          }
+        });
+
+        $('#greenLinesRedSlider').slider({
+          range: true,
+          min: min,
+          max: max,
+          values: [ {{ greenLinesLowerRed }}, {{ greenLinesUpperRed }} ],
+          change: function( event, ui ) {
+            $('#greenLinesLowerBoundValue3').text(ui.values[0]);
+            $('#greenLinesUpperBoundValue3').text(ui.values[1]);
+            updateBounds('greenLines');
+          }
+        });
+
+        updateConfig();
+
+      });
+      
+
+      function updateErosion(object) {
+
+        var erosion = $('#' + object + 'Erosion').val();
+
+        var erosionUrl = '/setErosion?object=' + object + '&erosion=' + erosion;
+
+        doHttpGet(erosionUrl, function(error, response) {
+
+          if(!error) {
+
+            updateConfig();
+          }
+        });
+      }
+
+
+      function updateDilation(object) {
+
+        var dilation = $('#' + object + 'Dilation').val();
+
+        var dilationUrl = '/setDilation?object=' + object + '&dilation=' + dilation;
+
+        doHttpGet(dilationUrl, function(error, response) {
+
+          if(!error) {
+
+            updateConfig();
+          }
+        });
+      }
+
+    </script>
+
+  </head>
+
+  <body>
+
+    <table> 
+
+      <tr>
+        <td><h3>Yellow Pieces</h3></td>
+      </tr>
+
+      <tr>
+        <td>Erosion: </td>
+        <td> 
+          <input type="text" id="yellowPiecesErosion" onchange="updateErosion('yellowPieces');" value="{{ yellowPiecesErosion }}" style="width: 50px;"/> 
+        </td>        
+      </tr>
+
+      <tr>
+        <td>Dilation: </td>
+        <td> 
+          <input type="text" id="yellowPiecesDilation" onchange="updateDilation('yellowPieces');" value="{{ yellowPiecesDilation }}" style="width: 50px;"/> 
+        </td>
+      </tr>
+
+      <tr>
+        
+        <td>Filter Blue</td>
+        
+        <td style="width: 250px; padding-left: 20px;">
+          <div id="yellowPiecesBlueSlider"></div>
+        </td>        
+        <td style="padding-left: 20px;">
+          <span id="yellowPiecesLowerBoundValue1">{{ yellowPiecesLowerBlue }}</span> - <span id="yellowPiecesUpperBoundValue1">{{ yellowPiecesUpperBlue }}</span>
+        </td>
+      
+      </tr>
+
+      <tr>
+        
+        <td>Filter Green</td>
+        
+        <td style="width: 250px; padding-left: 20px;">
+          <div id="yellowPiecesGreenSlider"></div>
+        </td>        
+        <td style="padding-left: 20px;">
+          <span id="yellowPiecesLowerBoundValue2">{{ yellowPiecesLowerGreen }}</span> - <span id="yellowPiecesUpperBoundValue2">{{ yellowPiecesUpperGreen }}</span>
+        </td>
+      
+      </tr>
+
+      <tr>
+        
+        <td>Filter Red</td>
+        
+        <td style="width: 250px; padding-left: 20px;">
+          <div id="yellowPiecesRedSlider"></div>
+        </td>        
+        <td style="padding-left: 20px;">
+          <span id="yellowPiecesLowerBoundValue3">{{ yellowPiecesLowerRed }}</span> - <span id="yellowPiecesUpperBoundValue3">{{ yellowPiecesUpperRed }}</span>
+        </td>
+      
+      </tr>
+
+
+      <tr>
+        <td><h3>Red Pieces</h3></td>
+      </tr>
+
+      <tr>
+        <td>Erosion: </td>
+        <td> 
+          <input type="text" id="redPiecesErosion" onchange="updateErosion('redPieces');" value="{{ redPiecesErosion }}" style="width: 50px;"/> 
+        </td>        
+      </tr>
+
+      <tr>
+        <td>Dilation: </td>
+        <td> 
+          <input type="text" id="redPiecesDilation" onchange="updateDilation('redPieces');" value="{{ redPiecesDilation }}" style="width: 50px;"/> 
+        </td>
+      </tr>
+
+      <tr>
+        
+        <td>Filter Blue</td>
+        
+        <td style="width: 250px; padding-left: 20px;">
+          <div id="redPiecesBlueSlider"></div>
+        </td>        
+        <td style="padding-left: 20px;">
+          <span id="redPiecesLowerBoundValue1">{{ redPiecesLowerBlue }}</span> - <span id="redPiecesUpperBoundValue1">{{ redPiecesUpperBlue }}</span>
+        </td>
+      
+      </tr>
+
+      <tr>
+        
+        <td>Filter Green</td>
+        
+        <td style="width: 250px; padding-left: 20px;">
+          <div id="redPiecesGreenSlider"></div>
+        </td>        
+        <td style="padding-left: 20px;">
+          <span id="redPiecesLowerBoundValue2">{{ redPiecesLowerGreen }}</span> - <span id="redPiecesUpperBoundValue2">{{ redPiecesUpperGreen }}</span>
+        </td>
+      
+      </tr>
+
+      <tr>
+        
+        <td>Filter Red</td>
+        
+        <td style="width: 250px; padding-left: 20px;">
+          <div id="redPiecesRedSlider"></div>
+        </td>        
+        <td style="padding-left: 20px;">
+          <span id="redPiecesLowerBoundValue3">{{ redPiecesLowerRed }}</span> - <span id="redPiecesUpperBoundValue3">{{ redPiecesUpperRed }}</span>
+        </td>
+      
+      </tr>
+
+
+
+
+    <tr>
+        <td><h3>Green Lines</h3></td>
+      </tr>
+
+      <tr>
+        <td>Erosion: </td>
+        <td> 
+          <input type="text" id="greenLinesErosion" onchange="updateErosion('greenLines');" value="{{ greenLinesErosion }}" style="width: 50px;"/> 
+        </td>        
+      </tr>
+
+      <tr>
+        <td>Dilation: </td>
+        <td> 
+          <input type="text" id="greenLinesDilation" onchange="updateDilation('greenLines');" value="{{ greenLinesDilation }}" style="width: 50px;"/> 
+        </td>
+      </tr>
+
+      <tr>
+        
+        <td>Filter Blue</td>
+        
+        <td style="width: 250px; padding-left: 20px;">
+          <div id="greenLinesBlueSlider"></div>
+        </td>        
+        <td style="padding-left: 20px;">
+          <span id="greenLinesLowerBoundValue1">{{ greenLinesLowerBlue }}</span> - <span id="greenLinesUpperBoundValue1">{{ greenLinesUpperBlue }}</span>
+        </td>
+      
+      </tr>
+
+      <tr>
+        
+        <td>Filter Green</td>
+        
+        <td style="width: 250px; padding-left: 20px;">
+          <div id="greenLinesGreenSlider"></div>
+        </td>        
+        <td style="padding-left: 20px;">
+          <span id="greenLinesLowerBoundValue2">{{ greenLinesLowerGreen }}</span> - <span id="greenLinesUpperBoundValue2">{{ greenLinesUpperGreen }}</span>
+        </td>
+      
+      </tr>
+
+      <tr>
+        
+        <td>Filter Red</td>
+        
+        <td style="width: 250px; padding-left: 20px;">
+          <div id="greenLinesRedSlider"></div>
+        </td>        
+        <td style="padding-left: 20px;">
+          <span id="greenLinesLowerBoundValue3">{{ greenLinesLowerRed }}</span> - <span id="greenLinesUpperBoundValue3">{{ greenLinesUpperRed }}</span>
+        </td>
+      
+      </tr>
+
+    </table>
+
+    <h3>Config</h3>
+    <p id="config"></p>    
+
+       <!-- 
+      <h3>Manually Set Position</h3>
+
+      Servo ID: <input type="text" id="setServoId" />
+      <br/>
+      Position: <input type="text" id="setPosition" />
+      <br/>
+      <br/>
+      <button onClick="handleSettingServoPosition()">Submit</button>
+      <br/>
+      <br/>
+      <br/>
+
+      <h3>Get Servo Position</h3>
+
+      Servo ID: <input type="text" id="getServoId" />
+      <br/>
+      <div id="getPosition" /></div>
+      <br/>
+      <button onClick="handleGettingServoPosition()">Submit</button>
+      <br/>
+      <br/>
+      <br/>
+
+      <h3>Rotation</h3>
+      
+      Servo 1 :
+      <button onClick="doHttpGet('/rotateServo/1/counterClockwise')">Counter Clock Wise</button>
+      <button onClick="doHttpGet('/rotateServo/1/idle')">Idle</button>
+      <button onClick="doHttpGet('/rotateServo/1/clockwise')">Clock Wise</button> -->
+      
+      <br/>      
+
+
+  </body>
+
+</html>

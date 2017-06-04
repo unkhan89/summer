@@ -1,0 +1,31 @@
+
+{
+    "red" : {
+        "dialation" : 8,
+        "lowerBound" : [170, 176, 115],
+        "upperBound" : [197, 242, 190]
+    }, 
+    "yellow" : {
+        "dialation" : 12.5,
+        "lowerBound" : [8, 139, 132],
+        "upperBound" : [34, 255, 255]
+    },
+    "blackLines" : {
+        "dialation" : 4,
+        "lowerBound" : [11, 3, 95],
+        "upperBound" : [94, 125, 113]
+    },
+    "bluelines" : {
+        "dialation" : 5,
+        "lowerBound" : [97, 33, 70],
+        "upperBound" : [125, 100, 105]
+    },
+    "greenHighlight" : {
+        "dialation" : 3,
+        "lowerBound" : [40, 109, 154],
+        "upperBound" : [69, 150, 174]
+    },
+    
+}
+    
+

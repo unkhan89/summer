@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+
+    <!--  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> -->
+
+    <script src="jquery-1.11.2.min.js"></script>
+
+    <style type="text/css">
+        
+        body {
+          text-align: center;
+        }
+
+    </style>
+          
+    <script>
+
+      var arm = null;
+
+      var DEFAULT_DELTA = 10;
+
+      function doHttpGet(url, callback) { 
+        
+        console.log('doHttpGet() url: ' + url);  
+        
+        $.get(url, function(result) {
+        
+          console.log('GET ' + url + ' response: ' + JSON.stringify(result));
+
+          callback(null, result);
+        });
+      }
+
+      function handleSettingServoPosition() {
+
+        var servoId = $('#setServoId').val();
+
+        var position = $('#setPosition').val();
+
+        console.log('Setting servo ' + servoId + ' to position ' + position);
+
+        doHttpGet('/setServo/' + servoId + '/' + position, function(error, response) {
+                  
+          $('#setServoPositionResult').text(JSON.stringify(response));
+
+          handleGettingServoPosition();
+
+        });
+      }
+
+      function handleGettingServoPosition() {
+
+        console.log('Getting servo positions');
+
+        doHttpGet('/getServoPositions', function(error, response) {
+
+          console.log('get response: ' + response);
+
+          var summary = 'Base ' + response.base.id + ': ' + response.base.current + ' (default ' + response.base.default + ') </br>';
+
+          summary += 'Shoulder ' + response.shoulder.id + ': ' + response.shoulder.current + ' (default ' + response.shoulder.default + ') </br>';
+
+          summary += 'Elbow ' + response.elbow.id + ': ' + response.elbow.current + ' (default ' + response.elbow.default + ') </br>';
+
+          summary += 'Hand: isOpen? ' + response.hand.isOpen + '</br>';
+  
+          $('#getServoPositions').html(summary);
+
+          arm = response;
+
+          $('#basePosition').html(response.base.current);
+
+          $('#shoulderPosition').html(response.shoulder.current);
+
+          $('#elbowPosition').html(response.elbow.current);          
+
+        });
+      }
+
+
+      function updateServoPosition(servoId, delta) {
+
+        var newPosition;
+
+        switch(servoId) {
+          case 0: 
+            newPosition = arm.base.current + delta;
+            break;
+          case 1: 
+            newPosition = arm.shoulder.current + delta;
+            break;
+          case 2: 
+            newPosition = arm.elbow.current + delta;
+            break;
+          default:
+            alert('Not a valied servoId: ' + servoId); 
+            return;            
+        }
+
+        console.log('updateServoPosition() servoId: ' + servoId + ', delta: ' + delta + ', newPosition: ' + newPosition);
+
+        doHttpGet('/setServo/' + servoId + '/' + newPosition, function(error, response) {
+
+          if(response.result && response.result === 'OK') {
+            
+            $('#setServoPositionResult').text(JSON.stringify(response));
+
+            handleGettingServoPosition();  
+
+          } else {
+
+            alert('Unable to set servo to new position');
+          }                 
+        });
+
+      }
+
+
+      $(function() {
+
+        handleGettingServoPosition();
+
+      });
+
+
+    </script>
+
+  </head>
+
+  <body>
+      
+      <h3>Get Servo Positions</h3>
+      <button onClick="handleGettingServoPosition()">Refresh</button>
+      <br/>
+      <br/>
+      <div id="getServoPositions"/></div>
+      <br/>
+      <br/>
+
+      <h3>Controller</h3>
+      Base: 
+        <span id="basePosition"></span>
+        <button onClick="updateServoPosition(0, -DEFAULT_DELTA)">-</button>
+        <button onClick="updateServoPosition(0, DEFAULT_DELTA)">+</button>
+      <br/>
+      <br/>
+      Shoulder:
+        <span id="shoulderPosition"></span>
+        <button onClick="updateServoPosition(1, -DEFAULT_DELTA)">-</button>
+        <button onClick="updateServoPosition(1, DEFAULT_DELTA)">+</button>
+      <br/>
+      <br/>
+      Elbow:
+        <span id="elbowPosition"></span>
+        <button onClick="updateServoPosition(2, -DEFAULT_DELTA)">-</button>
+        <button onClick="updateServoPosition(2, DEFAULT_DELTA)">+</button>
+      <br/>
+      <br/>
+      Gripper: 
+      <button onClick="doHttpGet('/gripper/open')">Open</button>
+      <button onClick="doHttpGet('/gripper/close')">Close</button>
+      <br/>
+      <br/>
+      <br/>
+      
+      <h3>Manually Set Position</h3>
+
+      Servo ID: <input type="text" id="setServoId" />
+      <br/>
+      Position: <input type="text" id="setPosition" />
+      <br/>
+      <br/>
+      <button onClick="handleSettingServoPosition()">Submit</button>
+      <br/>
+      <br/>
+
+      <h3>Last Operation Result</h3>
+
+
+      <div id="setServoPositionResult"/></div>
+      <br/>
+
+      
+      <br/>      
+
+  </body>
+
+</html>

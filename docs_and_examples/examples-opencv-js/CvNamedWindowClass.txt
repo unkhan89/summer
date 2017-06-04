@@ -1,0 +1,13 @@
+
+Constructor:
+
+  new CV.NamedWindow('name of window');
+
+
+Properties:
+
+  show(CvImageObject)
+  
+  destroy()
+
+  blockingWaitKey(unknownInt, ttlMs)

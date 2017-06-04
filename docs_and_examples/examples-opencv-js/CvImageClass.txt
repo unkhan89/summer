@@ -1,0 +1,188 @@
+
+Constructor:
+
+  An instance returned by CV.readImage('path to image', function(error, imageObject) {});
+
+  An instance returned by a copy of an existing image: image.copy()
+
+Properties:
+
+  absDiff()
+
+  adaptiveThreshold()
+
+  addWeighted()
+
+  adjustROI()
+
+  bilateralFilter()
+
+  bitwiseAnd()
+
+  bitwiseNot()
+
+  bitwiseXor()
+
+  brightness()
+
+  canny()
+
+  channels()
+
+  clone()
+
+  col(columnNumber) - > Returns an array of cells at the given columnNumber
+
+  convertGrayscale()
+
+  convertHSVscale()
+
+  convertTo()
+
+  copy()
+
+  copyTo()
+
+  copyWithMask()
+
+  countNonZero()
+
+  crop()
+
+  crop()
+
+  cvtColor()
+
+  detectObject()
+
+  dilate()
+
+  drawAllContours()
+
+  drawContour()
+
+  ellipse()
+
+  empty()
+
+  equalizeHist()
+
+  erode()
+
+  fillPoly()
+
+  findContours()
+
+  flip()
+
+  floodFill()
+
+  gaussianBlur()
+
+  get()
+
+  getData()
+
+  getPerspectiveTransform()
+
+  goodFeaturesToTrack()
+
+  height()  -> Number, height of the image
+
+  houghCircles()
+
+  houghLinesP()
+
+  inRange()
+
+  inspect()
+
+  line()
+
+  locateROI()
+
+  matchTemplate()
+
+  matchTemplateByMatrix()
+
+  mean()
+
+  meanStdDev()
+
+  meanWithMask()
+
+  medianBlur()
+
+  merge()
+
+  minMaxLoc()
+
+  moments()
+
+  norm()
+
+  normalize()
+
+  pixel()
+
+  pixelCol()
+
+  pixelRow()
+
+  ptr()
+
+  pushBack()
+
+  put()
+
+  putText()
+
+  pyrDown()
+
+  pyrUp()
+
+  rectangle()
+
+  release()
+
+  reshape()
+
+  resize()
+
+  roi()
+
+  rotate()
+
+  row(rowNumber) -> Retruns an array of cells at the given rowNubmer
+
+  save()
+
+  saveAsync()
+
+  set()
+
+  setWithMask()
+
+  shift()
+
+  size()
+
+  sobel()
+
+  split()
+
+  subtract()
+
+  templateMatches()
+
+  threshold()
+
+  toBuffer()
+
+  toBufferAsync()
+
+  warpAffine()
+
+  warpPerspective()
+
+  width() -> Number, width of image

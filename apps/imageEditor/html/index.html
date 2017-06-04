@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+
+    <!--  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> -->
+
+    <script src="jquery-1.11.2.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    
+    <style type="text/css">
+        
+        body {
+          text-align: center;
+        }
+
+    </style>
+    
+    <script>
+
+    function doHttpGet(url, callback) { 
+          
+      console.log('doHttpGet() url: ' + url);  
+      
+      $.get(url, function(response) {
+      
+        // console.log('GET ' + url + ' response: ' + response);
+        console.log('Got successful response: ' + JSON.stringify(response));
+
+        callback(null, response);      
+      })
+      .fail(function(error) {
+        
+        console.log('Got error response: ' + JSON.stringify(error));
+      });
+    }
+
+
+    function updateBounds() {
+
+      var lowerBound1 = $('#lowerBoundValue1').text(),
+          lowerBound2 = $('#lowerBoundValue2').text(),
+          lowerBound3 = $('#lowerBoundValue3').text();
+
+      var upperBound1 = $('#upperBoundValue1').text(),
+          upperBound2 = $('#upperBoundValue2').text(),
+          upperBound3 = $('#upperBoundValue3').text();
+
+      var boundsUrl = '/setBounds?' + 
+                'lower1=' + lowerBound1 + '&' +
+                'lower2=' + lowerBound2 + '&' +
+                'lower3=' + lowerBound3 + '&' +
+                'upper1=' + upperBound1 + '&' +
+                'upper2=' + upperBound2 + '&' +
+                'upper3=' + upperBound3;
+
+      doHttpGet(boundsUrl, function(error, response) {});
+    }
+    
+      $(function() {
+
+        var min = 0, max = 255;
+        
+        $('#blueSlider').slider({
+          range: true,
+          min: min,
+          max: max,
+          values: [ min, max ],
+          change: function( event, ui ) {
+
+            $('#lowerBoundValue1').text(ui.values[0]);
+            $('#upperBoundValue1').text(ui.values[1]);
+            updateBounds();
+          }
+        });
+
+
+        $('#greenSlider').slider({
+          range: true,
+          min: min,
+          max: max,
+          values: [ min, max ],
+          change: function( event, ui ) {
+
+            $('#lowerBoundValue2').text(ui.values[0]);
+            $('#upperBoundValue2').text(ui.values[1]);
+            updateBounds();
+          }
+        });
+
+
+        $('#redSlider').slider({
+          range: true,
+          min: min,
+          max: max,
+          values: [ min, max ],
+          change: function( event, ui ) {
+
+            $('#lowerBoundValue3').text(ui.values[0]);
+            $('#upperBoundValue3').text(ui.values[1]);
+            updateBounds();
+          }
+        });
+
+        // set default values
+
+        updateBounds();
+
+      });
+
+    </script>
+
+  </head>
+
+  <body>
+
+    <table> 
+
+      <tr>
+
+        <td>Erosion: </td>
+        <td> 
+          <input type="text" id="erosion" onchange="updateErosion();" value="1" style="width: 50px;"/> 
+        </td>
+
+        <script>
+
+        function updateErosion() {
+
+          var erosion = $('#erosion').val();
+
+          var erosionUrl = '/setErosion?erosion=' + erosion;
+
+          doHttpGet(erosionUrl, function(error, response) {});
+        }
+
+        </script>
+
+      </tr>
+
+      <tr>
+
+        <td>Dialation: </td>
+        <td> 
+          <input type="text" id="dialation" onchange="updateDialation();" value="1" style="width: 50px;"/> 
+        </td>
+
+        <script>
+
+        function updateDialation() {
+
+          var dialation = $('#dialation').val();
+
+          var dialationUrl = '/setDialation?dialation=' + dialation;
+
+          doHttpGet(dialationUrl, function(error, response) {});
+        }
+
+        </script>
+
+      </tr>
+
+      <tr>
+        
+        <td>Filter Blue</td>
+        
+        <td style="width: 250px; padding-left: 20px;">
+          <div id="blueSlider"></div>
+        </td>        
+        <td style="padding-left: 20px;">
+          <span id="lowerBoundValue1">0</span> - <span id="upperBoundValue1">255</span>
+        </td>
+      
+      </tr>
+
+      <tr>
+        
+        <td>Filter Green</td>
+        
+        <td style="width: 250px; padding-left: 20px;">
+          <div id="greenSlider"></div>
+        </td>        
+        <td style="padding-left: 20px;">
+          <span id="lowerBoundValue2">0</span> - <span id="upperBoundValue2">255</span>
+        </td>
+      
+      </tr>
+
+      <tr>
+        
+        <td>Filter Red</td>
+        
+        <td style="width: 250px; padding-left: 20px;">
+          <div id="redSlider"></div>
+        </td>        
+        <td style="padding-left: 20px;">
+          <span id="lowerBoundValue3">0</span> - <span id="upperBoundValue3">255</span>
+        </td>
+      
+      </tr>
+
+
+      <!-- <tr>
+        
+        <td>Lower Bound</td>
+        
+        <td style="width: 250px; padding-left: 20px;">
+          <div id="lowerBoundSlider1"></div>
+        </td>        
+        <td style="padding-left: 20px;">
+          <div id="lowerBoundValue1">0</div>
+        </td>
+      
+      </tr>
+
+      <tr>
+        
+        <td></td>
+        
+        <td style="width: 250px; padding-left: 20px;">
+          <div id="lowerBoundSlider2"></div>
+        </td>        
+        <td style="padding-left: 20px;">
+          <div id="lowerBoundValue2">0</div>
+        </td>
+      
+      </tr>
+
+      <tr>
+        
+        <td></td>
+        
+        <td style="width: 250px; padding-left: 20px;">
+          <div id="lowerBoundSlider3"></div>
+        </td>        
+        <td style="padding-left: 20px;">
+          <div id="lowerBoundValue3">0</div>
+        </td>
+      
+      </tr>
+
+      <tr>
+      
+        <td>Upper Bound</td>
+      
+        <td style="width: 250px; padding-left: 20px;">
+          <div id="upperBoundSlider1"></div>
+        </td>
+
+        <td style="padding-left: 20px;">
+          <div id="upperBoundValue1">0</div>
+        </td>
+
+      </tr>
+
+      <tr>
+      
+        <td></td>
+      
+        <td style="width: 250px; padding-left: 20px;">
+          <div id="upperBoundSlider2"></div>
+        </td>
+
+        <td style="padding-left: 20px;">
+          <div id="upperBoundValue2">0</div>
+        </td>
+
+      </tr>
+
+      <tr>
+      
+        <td></td>
+      
+        <td style="width: 250px; padding-left: 20px;">
+          <div id="upperBoundSlider3"></div>
+        </td>
+
+        <td style="padding-left: 20px;">
+          <div id="upperBoundValue3">0</div>
+        </td>
+
+      </tr> -->
+
+    </table>
+
+    
+
+       <!-- 
+      <h3>Manually Set Position</h3>
+
+      Servo ID: <input type="text" id="setServoId" />
+      <br/>
+      Position: <input type="text" id="setPosition" />
+      <br/>
+      <br/>
+      <button onClick="handleSettingServoPosition()">Submit</button>
+      <br/>
+      <br/>
+      <br/>
+
+      <h3>Get Servo Position</h3>
+
+      Servo ID: <input type="text" id="getServoId" />
+      <br/>
+      <div id="getPosition" /></div>
+      <br/>
+      <button onClick="handleGettingServoPosition()">Submit</button>
+      <br/>
+      <br/>
+      <br/>
+
+      <h3>Rotation</h3>
+      
+      Servo 1 :
+      <button onClick="doHttpGet('/rotateServo/1/counterClockwise')">Counter Clock Wise</button>
+      <button onClick="doHttpGet('/rotateServo/1/idle')">Idle</button>
+      <button onClick="doHttpGet('/rotateServo/1/clockwise')">Clock Wise</button> -->
+      
+      <br/>      
+
+
+  </body>
+
+</html>

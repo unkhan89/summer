@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+
+    <!--  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> -->
+
+    <script src="jquery-1.11.2.min.js"></script>
+
+    <style type="text/css">
+        
+        body {
+          text-align: center;
+        }
+
+    </style>
+          
+    <script>
+
+      function doHttpGet(url, callback) { 
+        
+        console.log('doHttpGet() url: ' + url);  
+        
+        $.get(url, function(result) {
+        
+          console.log('GET ' + url + ' response: ' + JSON.stringify(result));
+
+          callback(null, result);
+        });
+      }
+
+      function handleSettingServoPosition() {
+
+        var servoId = $('#setServoId').val();
+
+        var position = $('#setPosition').val();
+
+        console.log('Setting servo ' + servoId + ' to position ' + position);
+
+        doHttpGet('/setServo/' + servoId + '/' + position, function(error, response) {});
+      }
+
+      function handleGettingServoPosition(){
+
+        var servoId = $('#getServoId').val();
+
+        var position = 
+
+        console.log('Setting servo ' + servoId + ' to position ' + position);
+
+        doHttpGet('/getServoPosition/' + servoId , function(error, response) {
+
+          console.log('get response: ' + response);
+
+          $('#getPosition').text(JSON.stringify(response));
+        });
+      }
+
+    </script>
+
+  </head>
+
+  <body>
+       
+      <h3>Manually Set Position</h3>
+
+      Servo ID: <input type="text" id="setServoId" />
+      <br/>
+      Position: <input type="text" id="setPosition" />
+      <br/>
+      <br/>
+      <button onClick="handleSettingServoPosition()">Submit</button>
+      <br/>
+      <br/>
+      <br/>
+
+      <h3>Get Servo Position</h3>
+
+      Servo ID: <input type="text" id="getServoId" />
+      <br/>
+      <div id="getPosition" /></div>
+      <br/>
+      <button onClick="handleGettingServoPosition()">Submit</button>
+      <br/>
+      <br/>
+      <br/>
+
+      <h3>Rotation</h3>
+      
+      Servo 1 :
+      <button onClick="doHttpGet('/rotateServo/1/counterClockwise')">Counter Clock Wise</button>
+      <button onClick="doHttpGet('/rotateServo/1/idle')">Idle</button>
+      <button onClick="doHttpGet('/rotateServo/1/clockwise')">Clock Wise</button>
+      
+      <br/>      
+
+
+  </body>
+
+</html>
